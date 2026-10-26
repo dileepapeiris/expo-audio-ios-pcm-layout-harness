@@ -25,3 +25,30 @@ let case1Pass = got1 == [1, 3, 2, 4]
 print("stereo-layout: emitted \(got1), expected [1.0, 3.0, 2.0, 4.0] -> \(case1Pass ? "PASS" : "FAIL")")
 stereo.stop()
 
+// Case 2: hardware Float32 mono, the app requests Int16, and no converter is available.
+var options2 = AudioStreamOptions()
+options2.sampleRate = 48000; options2.channels = 1; options2.encoding = .int16
+let mono = AudioStream(options: options2)
+AVAudioInputNode.nextHardwareFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 48000, channels: 1, interleaved: true)!
+AVAudioConverter.failInit = true
+var startError: Error?
+do { try mono.start() } catch { startError = error }
+AVAudioConverter.failInit = false
+var case2Pass = false
+if let startError {
+  print("converter-failure: start() rejected the request: \(startError) -> PASS")
+  case2Pass = true
+} else {
+  let node2 = AVAudioEngine.lastInstance!.inputNode
+  let buffer2 = AVAudioPCMBuffer(pcmFormat: node2.hardwareFormat, frameCapacity: 1)!
+  buffer2.fillPlanar([[0.5]])
+  node2.tapBlock!(buffer2, AVAudioTime(hostTime: 0))
+  let payload = mono.events.last(where: { $0.0 == "audioStreamBuffer" })?.1 ?? [:]
+  let byteCount = (payload["data"] as? ArrayBuffer)?.count ?? -1
+  let reported = payload["encoding"] as? String
+  let bytesPerSample = byteCount // one frame, one channel
+  case2Pass = reported == "float32"
+  print("converter-failure: start() succeeded, buffer has \(bytesPerSample) bytes per sample for an int16 request (int16 is 2), payload encoding=\(reported ?? "absent") -> \(case2Pass ? "PASS" : "FAIL")")
+  mono.stop()
+}
+
