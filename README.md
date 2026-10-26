@@ -24,3 +24,15 @@ Needs Xcode's `swiftc`.
 - converter-failure: `start()` rejects the request, or the buffer event says which encoding it
   carries.
 
+## Result on 10/26/26 with the expo-audio 58.0.10 sources from `main`
+
+```
+stereo-layout: emitted [1.0, 2.0, 99.0, 99.0], expected [1.0, 3.0, 2.0, 4.0] -> FAIL
+converter-failure: start() succeeded, buffer has 4 bytes per sample for an int16 request (int16 is 2), payload encoding=absent -> FAIL
+FAIL
+```
+
+The conversion check compares sample rate, channel count and sample format but not the layout, so a
+planar stereo input is passed through as if it were interleaved and only the first channel's plane
+is copied. When no converter can be made, the stream falls back to the hardware format and emits
+Float32 bytes for an Int16 request without saying so.
