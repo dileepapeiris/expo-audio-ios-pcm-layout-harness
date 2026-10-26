@@ -5,3 +5,5 @@
 # Needs Xcode's swiftc.
 set -e
 cd "$(dirname "$0")"
+rm -rf out && mkdir -p out
+sed -e 's/^import AVFoundation$/import AVStub/' -e 's/^import ExpoModulesCore$/import ExpoStub/' "$1" > out/AudioStream.swift
