@@ -18,3 +18,15 @@ enum AudioStreamFileFormat: String, Enumerable {
   var fileExtension: String { rawValue }
 }
 
+struct AudioStreamFileRecordingResult: Record {
+  @Field var uri: String = ""
+  @Field var duration: Double = 0.0
+  @Field var size: Int = 0
+  @Field var sampleRate: Int = 0
+  @Field var channels: Int = 0
+  @Field var encoding: AudioStreamEncoding = .int16
+}
+
+internal final class AudioStreamFileException: GenericException<String> {
+  override var reason: String { param }
+}
