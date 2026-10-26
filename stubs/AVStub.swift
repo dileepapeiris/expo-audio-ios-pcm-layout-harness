@@ -70,3 +70,20 @@ public final class AVAudioInputNode {
   public func removeTap(onBus bus: Int) { if installedTaps > 0 { installedTaps -= 1 } }
 }
 
+public struct AVAudioEngineStartFailure: Error, CustomStringConvertible { public var description: String { "simulated AVAudioEngine.start() failure" } }
+
+public final class AVAudioEngine {
+  /** When true, start() throws. Read when start() is called, so it can be set before AudioStream.start(). */
+  public static var failNextStart = false
+  public static var lastInstance: AVAudioEngine?
+  public let inputNode = AVAudioInputNode()
+  public private(set) var isRunning = false
+  public private(set) var stopCalls = 0
+  public init() { AVAudioEngine.lastInstance = self }
+  public func start() throws {
+    if AVAudioEngine.failNextStart { AVAudioEngine.failNextStart = false; throw AVAudioEngineStartFailure() }
+    isRunning = true
+  }
+  public func stop() { isRunning = false; stopCalls += 1 }
+}
+
