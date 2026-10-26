@@ -22,3 +22,11 @@ public final class ArrayBuffer {
   public func floats() -> [Float] { bytes.withUnsafeBytes { Array($0.bindMemory(to: Float.self)) } }
 }
 
+public protocol Enumerable {}
+public protocol Record {}
+
+@propertyWrapper
+public struct Field<T> {
+  public var wrappedValue: T
+  public init(wrappedValue: T) { self.wrappedValue = wrappedValue }
+}
