@@ -11,3 +11,10 @@ struct AudioStreamOptions: Record {
   @Field var encoding: AudioStreamEncoding = .float32
 }
 
+enum AudioStreamFileFormat: String, Enumerable {
+  case wav
+  case pcm
+
+  var fileExtension: String { rawValue }
+}
+
