@@ -20,3 +20,8 @@ let node1 = AVAudioEngine.lastInstance!.inputNode
 let buffer1 = AVAudioPCMBuffer(pcmFormat: planarStereo, frameCapacity: 2)!
 buffer1.fillPlanar([[1, 2], [3, 4]])   // left [1, 2], right [3, 4]
 node1.tapBlock!(buffer1, AVAudioTime(hostTime: 0))
+let got1 = emittedFloats(stereo) ?? []
+let case1Pass = got1 == [1, 3, 2, 4]
+print("stereo-layout: emitted \(got1), expected [1.0, 3.0, 2.0, 4.0] -> \(case1Pass ? "PASS" : "FAIL")")
+stereo.stop()
+
