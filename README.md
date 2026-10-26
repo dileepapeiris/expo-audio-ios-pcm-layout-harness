@@ -18,3 +18,9 @@ Needs Xcode's `swiftc`.
 ./run.sh ../expo/packages/expo-audio/ios/AudioStream.swift
 ```
 
+## Expected
+
+- stereo-layout: the emitted buffer is interleaved `[1, 3, 2, 4]`.
+- converter-failure: `start()` rejects the request, or the buffer event says which encoding it
+  carries.
+
