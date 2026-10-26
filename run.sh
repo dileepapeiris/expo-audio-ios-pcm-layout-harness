@@ -9,3 +9,5 @@ rm -rf out && mkdir -p out
 sed -e 's/^import AVFoundation$/import AVStub/' -e 's/^import ExpoModulesCore$/import ExpoStub/' "$1" > out/AudioStream.swift
 swiftc -emit-library -emit-module -module-name AVStub -o out/libAVStub.dylib -emit-module-path out/AVStub.swiftmodule stubs/AVStub.swift
 swiftc -emit-library -emit-module -module-name ExpoStub -o out/libExpoStub.dylib -emit-module-path out/ExpoStub.swiftmodule stubs/ExpoStub.swift
+swiftc -suppress-warnings -I out -L out -lAVStub -lExpoStub -o out/repro src/Records.swift src/AudioStreamFileWriter.swift out/AudioStream.swift src/main.swift
+DYLD_LIBRARY_PATH=out out/repro
