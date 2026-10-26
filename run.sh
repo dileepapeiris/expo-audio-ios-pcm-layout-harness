@@ -7,3 +7,5 @@ set -e
 cd "$(dirname "$0")"
 rm -rf out && mkdir -p out
 sed -e 's/^import AVFoundation$/import AVStub/' -e 's/^import ExpoModulesCore$/import ExpoStub/' "$1" > out/AudioStream.swift
+swiftc -emit-library -emit-module -module-name AVStub -o out/libAVStub.dylib -emit-module-path out/AVStub.swiftmodule stubs/AVStub.swift
+swiftc -emit-library -emit-module -module-name ExpoStub -o out/libExpoStub.dylib -emit-module-path out/ExpoStub.swiftmodule stubs/ExpoStub.swift
