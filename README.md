@@ -10,3 +10,11 @@ input node stub hands the tap block to the harness, and the converter stub can r
 - **converter-failure:** the hardware delivers Float32 mono, the app requests Int16, and no
   converter is available.
 
+## Run
+
+Needs Xcode's `swiftc`.
+
+```sh
+./run.sh ../expo/packages/expo-audio/ios/AudioStream.swift
+```
+
