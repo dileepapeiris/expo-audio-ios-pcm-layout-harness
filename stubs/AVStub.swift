@@ -87,3 +87,12 @@ public final class AVAudioEngine {
   public func stop() { isRunning = false; stopCalls += 1 }
 }
 
+public final class AVAudioSession {
+  public struct Category { public static let record = Category() }
+  public struct Mode { public static let measurement = Mode() }
+  private static let shared = AVAudioSession()
+  public static func sharedInstance() -> AVAudioSession { shared }
+  public func setCategory(_ category: Category, mode: Mode) throws {}
+  public func setPreferredSampleRate(_ rate: Double) throws {}
+  public func setActive(_ active: Bool) throws {}
+}
