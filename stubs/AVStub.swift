@@ -49,3 +49,13 @@ public final class AVAudioPCMBuffer {
   }
 }
 
+public enum AVAudioConverterInputStatus { case haveData, noDataNow, endOfStream }
+public enum AVAudioConverterOutputStatus { case haveData, inputRanDry, endOfStream, error }
+public final class AVAudioConverter {
+  /** When true, init returns nil, like AVFoundation does for an unsupported conversion. */
+  public static var failInit = false
+  public init?(from: AVAudioFormat, to: AVAudioFormat) { if AVAudioConverter.failInit { return nil } }
+  public func convert(to: AVAudioPCMBuffer, error: NSErrorPointer,
+                      withInputFrom block: (AVAudioPacketCount, UnsafeMutablePointer<AVAudioConverterInputStatus>) -> AVAudioPCMBuffer?) -> AVAudioConverterOutputStatus { .endOfStream }
+}
+
