@@ -59,3 +59,14 @@ public final class AVAudioConverter {
                       withInputFrom block: (AVAudioPacketCount, UnsafeMutablePointer<AVAudioConverterInputStatus>) -> AVAudioPCMBuffer?) -> AVAudioConverterOutputStatus { .endOfStream }
 }
 
+public final class AVAudioInputNode {
+  public private(set) var installedTaps = 0
+  /** Format the next created input node reports as its hardware format. */
+  public static var nextHardwareFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 44100, channels: 1, interleaved: false)!
+  public let hardwareFormat = AVAudioInputNode.nextHardwareFormat
+  public func outputFormat(forBus bus: Int) -> AVAudioFormat { hardwareFormat }
+  public private(set) var tapBlock: ((AVAudioPCMBuffer, AVAudioTime) -> Void)?
+  public func installTap(onBus bus: Int, bufferSize: AVAudioFrameCount, format: AVAudioFormat?, block: @escaping (AVAudioPCMBuffer, AVAudioTime) -> Void) { installedTaps += 1; tapBlock = block }
+  public func removeTap(onBus bus: Int) { if installedTaps > 0 { installedTaps -= 1 } }
+}
+
