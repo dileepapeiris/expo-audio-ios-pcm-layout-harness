@@ -52,3 +52,5 @@ if let startError {
   mono.stop()
 }
 
+print((case1Pass && case2Pass) ? "PASS" : "FAIL")
+exit((case1Pass && case2Pass) ? 0 : 1)
